@@ -1,0 +1,40 @@
+.perfil-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 600px) { .perfil-grid { grid-template-columns: 1fr; } }
+
+.card h3 {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.info-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .4rem 1rem;
+  font-size: 14px;
+}
+dt { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+dd { color: var(--text); }
+
+.password-form { display: flex; flex-direction: column; gap: .85rem; }
+
+.amigos-section { display: flex; flex-direction: column; gap: 1rem; }
+
+.buscar-form { display: flex; gap: .75rem; }
+.buscar-form input { flex: 1; }
+
+.amigos-lista { border-top: 1px solid var(--border); padding-top: 1rem; }
+.amigos-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .6rem;
+}

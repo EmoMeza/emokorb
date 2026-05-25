@@ -1,0 +1,242 @@
+@if (cargando()) {
+  <p class="muted" style="text-align:center;margin-top:3rem">Cargando...</p>
+} @else if (error()) {
+  <p class="error-msg">{{ error() }}</p>
+} @else if (lista(); as l) {
+
+  <div class="detalle-header">
+    <div>
+      <h2>{{ l.nombre }}</h2>
+      <p class="muted colaboradores">
+        Por {{ l.owner.username }}
+        @if (l.colaboradores.length > 0) {
+          · Con {{ l.colaboradores.map(c => c.username).join(', ') }}
+        }
+      </p>
+    </div>
+    <div class="header-actions">
+      <span class="badge" [class.badge-active]="l.estado === 'activo'" [class.badge-done]="l.estado === 'finalizado'">
+        {{ l.estado }}
+      </span>
+      @if (esOwner) {
+        <button class="btn-secondary" (click)="abrirModalColaboradores()">Compartir</button>
+        @if (estaActiva) {
+          <button class="btn-primary" (click)="abrirModalFinalizar()">Finalizar</button>
+        } @else {
+          <button class="btn-secondary" (click)="reactivar()">Reactivar</button>
+        }
+      }
+    </div>
+  </div>
+
+  @if (estaActiva) {
+    <form class="agregar-form card" (ngSubmit)="agregarProducto()">
+      <input type="text" [(ngModel)]="nuevoNombre" name="nombre"
+        placeholder="Agregar producto (ej: Tallarines)" />
+      <button type="submit" class="btn-primary" [disabled]="agregando() || !nuevoNombre.trim()">
+        {{ agregando() ? '...' : '+ Agregar' }}
+      </button>
+    </form>
+  }
+
+  <div class="card productos-card">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-check"></th>
+          <th>Producto</th>
+          <th class="col-num">Precio unit.</th>
+          <th class="col-num">Cant.</th>
+          <th class="col-num">Total</th>
+          @if (estaActiva) { <th class="col-del"></th> }
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of productosOrdenados; track p._id) {
+          <tr [class.row-listo]="estaListo(p)">
+            <td class="col-check">
+              @if (estaListo(p)) { <span class="check-icon">✓</span> }
+            </td>
+            <td class="nombre-col">
+              @if (estaActiva) {
+                <input class="input-nombre" type="text" [value]="p.nombre"
+                  (blur)="onNombreBlur(p, $event)" />
+              } @else {
+                {{ p.nombre }}
+              }
+            </td>
+            <td class="col-num">
+              @if (estaActiva) {
+                <input class="input-num" type="number" inputmode="decimal"
+                  min="0" [value]="p.precioUnitario || ''" placeholder="0"
+                  (blur)="onPrecioBlur(p, $event)" />
+              } @else {
+                {{ p.precioUnitario ? '$' + p.precioUnitario.toLocaleString('es-CL') : '—' }}
+              }
+            </td>
+            <td class="col-num">
+              @if (estaActiva) {
+                <input class="input-num" type="number" inputmode="numeric"
+                  min="0" [value]="p.cantidad || ''" placeholder="0"
+                  (blur)="onCantidadBlur(p, $event)" />
+              } @else {
+                {{ p.cantidad || '—' }}
+              }
+            </td>
+            <td class="col-num total-col">
+              {{ p.total ? '$' + p.total.toLocaleString('es-CL') : '—' }}
+            </td>
+            @if (estaActiva) {
+              <td class="col-del">
+                <button class="btn-icon del-btn" (click)="eliminarProducto(p._id)" title="Eliminar">✕</button>
+              </td>
+            }
+          </tr>
+        }
+        @if (l.productos.length === 0) {
+          <tr>
+            <td [attr.colspan]="estaActiva ? 6 : 5" class="muted" style="text-align:center;padding:2rem">
+              Sin productos aún
+            </td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td colspan="4">Total</td>
+          <td class="total-col">${{ l.total.toLocaleString('es-CL') }}</td>
+          @if (estaActiva) { <td></td> }
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  @if (esOwner && l.estado === 'finalizado') {
+    <div class="boleta-section card">
+      <h3>Boleta</h3>
+      @if (l.boleta) {
+        <div class="boleta-actions">
+          <button class="btn-secondary" (click)="abrirModalBoleta()">Ver boleta</button>
+          <label class="btn-secondary" style="cursor:pointer">
+            Reemplazar
+            <input type="file" accept="image/*,application/pdf" (change)="subirBoletaExistente($event)" hidden />
+          </label>
+        </div>
+      } @else {
+        <label class="btn-primary" style="display:inline-block;cursor:pointer">
+          Subir boleta
+          <input type="file" accept="image/*,application/pdf" (change)="subirBoletaExistente($event)" hidden />
+        </label>
+      }
+    </div>
+  }
+}
+
+<!-- Modal ver boleta -->
+@if (mostrarModalBoleta()) {
+  <div class="modal-backdrop" (click)="cerrarModalBoleta()">
+    <div class="modal-card card boleta-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Boleta</h3>
+        <button class="btn-icon" (click)="cerrarModalBoleta()">✕</button>
+      </div>
+      @if (boletaBlobUrl()) {
+        <img [src]="boletaBlobUrl()!" class="boleta-modal-img" alt="Boleta de compra" />
+      } @else {
+        <p class="muted" style="text-align:center;padding:2rem">Cargando imagen...</p>
+      }
+    </div>
+  </div>
+}
+
+<!-- Modal finalizar -->
+@if (mostrarModalFinalizar()) {
+  <div class="modal-backdrop" (click)="mostrarModalFinalizar.set(false)">
+    <div class="modal-card card modal-finalizar" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Finalizar lista</h3>
+        <button class="btn-icon" (click)="mostrarModalFinalizar.set(false)">✕</button>
+      </div>
+
+      <div class="resumen-scroll">
+        <table class="resumen-tabla">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="col-num">Precio</th>
+              <th class="col-num">Cant.</th>
+              <th class="col-num">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of lista()!.productos; track p._id) {
+              <tr [class.row-pendiente]="!estaListo(p)">
+                <td>{{ p.nombre }}</td>
+                <td class="col-num">{{ p.precioUnitario ? '$' + p.precioUnitario.toLocaleString('es-CL') : '—' }}</td>
+                <td class="col-num">{{ p.cantidad || '—' }}</td>
+                <td class="col-num" style="font-weight:600">{{ p.total ? '$' + p.total.toLocaleString('es-CL') : '—' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3">Total</td>
+              <td class="col-num" style="color:var(--primary)">${{ lista()!.total.toLocaleString('es-CL') }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="boleta-upload">
+        <p class="boleta-label">Boleta (opcional)</p>
+        <label class="boleta-drop" [class.boleta-drop--selected]="boletaArchivo()">
+          @if (boletaArchivo()) {
+            <span class="boleta-file-name">📎 {{ boletaArchivo()!.name }}</span>
+          } @else {
+            <span>Toca para adjuntar foto de boleta</span>
+          }
+          <input type="file" accept="image/*,application/pdf" capture="environment"
+            (change)="seleccionarBoleta($event)" hidden />
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="mostrarModalFinalizar.set(false)">Cancelar</button>
+        <button class="btn-primary" (click)="confirmarFinalizar()" [disabled]="finalizando()">
+          {{ finalizando() ? 'Finalizando...' : 'Confirmar finalización' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal colaboradores -->
+@if (mostrarModalColaboradores()) {
+  <div class="modal-backdrop" (click)="mostrarModalColaboradores.set(false)">
+    <div class="modal-card card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Compartir lista</h3>
+        <button class="btn-icon" (click)="mostrarModalColaboradores.set(false)">✕</button>
+      </div>
+      @if (amigos().length === 0) {
+        <p class="muted">No tienes amigos para agregar. Ve a tu perfil para buscar amigos.</p>
+      } @else {
+        <ul class="colaborador-lista">
+          @for (a of amigos(); track a._id) {
+            <li class="colaborador-item">
+              <div class="usuario-info">
+                <span class="usuario-name">{{ a.username }}</span>
+                <span class="muted">{{ a.nombre }} {{ a.apellido }}</span>
+              </div>
+              @if (esColaborador(a._id)) {
+                <button class="btn-danger" style="padding:.3rem .75rem;font-size:13px" (click)="quitarColaborador(a._id)">Quitar</button>
+              } @else {
+                <button class="btn-primary" style="padding:.3rem .75rem;font-size:13px" (click)="agregarColaborador(a._id)">+ Agregar</button>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+}

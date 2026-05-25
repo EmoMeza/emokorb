@@ -1,0 +1,69 @@
+.listas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 480px) {
+  .listas-grid { grid-template-columns: 1fr; }
+}
+
+.lista-card {
+  display: block;
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.lista-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.lista-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+.lista-nombre { font-weight: 700; font-size: 1rem; }
+
+.lista-meta { display: flex; justify-content: space-between; align-items: center; }
+.lista-total { font-weight: 700; color: var(--primary); font-size: 1rem; }
+
+.lista-delete {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  opacity: 0;
+  transition: opacity var(--transition);
+  font-size: 12px;
+}
+.lista-card:hover .lista-delete { opacity: 1; }
+@media (max-width: 639px) { .lista-delete { opacity: 1; } }
+
+/* base-section inside modal */
+.base-section { display: flex; flex-direction: column; gap: .5rem; overflow: hidden; }
+.base-label { font-size: 13px; font-weight: 700; color: var(--text); }
+.base-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  overflow-y: auto;
+  max-height: 220px;
+}
+.base-opcion {
+  text-align: left;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: .65rem .9rem;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+.base-opcion:hover { border-color: var(--primary); background: var(--primary-dim); }
+.base-opcion--selected { border-color: var(--primary); background: var(--primary-dim); }
+.base-nombre { font-weight: 700; font-size: 14px; }
+.base-meta { font-size: 12px; margin-top: .15rem; color: var(--text-muted); }
+.base-aviso { font-size: 12px; color: var(--text-muted); }

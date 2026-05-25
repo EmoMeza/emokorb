@@ -1,0 +1,97 @@
+<div class="page-header">
+  <h2>Gestión de usuarios</h2>
+  <button class="btn-primary" (click)="creandoForm.set(!creandoForm())">
+    {{ creandoForm() ? 'Cancelar' : '+ Nuevo usuario' }}
+  </button>
+</div>
+
+@if (creandoForm()) {
+  <div class="card crear-form">
+    <h3>Nuevo usuario</h3>
+    @if (error()) { <p class="error-msg">{{ error() }}</p> }
+    <div class="fields-row">
+      <div class="field">
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="nuevoUsuario.nombre" />
+      </div>
+      <div class="field">
+        <label>Apellido</label>
+        <input type="text" [(ngModel)]="nuevoUsuario.apellido" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="nuevoUsuario.email" />
+    </div>
+    <div class="fields-row">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" [(ngModel)]="nuevoUsuario.username" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="nuevoUsuario.password" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Rol</label>
+      <select [(ngModel)]="nuevoUsuario.role">
+        <option value="usuario">Usuario</option>
+        <option value="administrador">Administrador</option>
+      </select>
+    </div>
+    <button class="btn-primary" (click)="crear()">Crear usuario</button>
+  </div>
+}
+
+@if (cargando()) {
+  <p class="muted" style="text-align:center;margin-top:2rem">Cargando...</p>
+} @else {
+  <div class="card" style="padding:0;overflow:hidden">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of usuarios(); track u._id) {
+          <tr>
+            <td><strong>{{ u.username }}</strong></td>
+            <td class="muted">{{ u.email }}</td>
+            <td>{{ u.nombre }} {{ u.apellido }}</td>
+            <td>
+              <span class="badge" [class.badge-active]="u.role === 'administrador'" [class.badge-done]="u.role === 'usuario'">
+                {{ u.role }}
+              </span>
+            </td>
+            <td class="acciones">
+              <button class="btn-icon" (click)="abrirPasswordModal(u)" title="Cambiar contraseña">🔑</button>
+              <button class="btn-icon" style="color:var(--danger)" (click)="eliminar(u)" title="Eliminar">🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (passwordModal(); as modal) {
+  <div class="modal-backdrop" (click)="passwordModal.set(null)">
+    <div class="modal-card card" (click)="$event.stopPropagation()">
+      <h3>Cambiar contraseña de <em>{{ modal.username }}</em></h3>
+      <div class="field">
+        <label>Nueva contraseña</label>
+        <input type="password" [(ngModel)]="nuevaPassword" placeholder="••••••••" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="passwordModal.set(null)">Cancelar</button>
+        <button class="btn-primary" (click)="guardarPassword()" [disabled]="!nuevaPassword">Guardar</button>
+      </div>
+    </div>
+  </div>
+}

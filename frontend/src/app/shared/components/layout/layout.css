@@ -1,0 +1,46 @@
+/* Desktop nav visible, bottom nav hidden */
+.nav-desktop { display: flex; }
+.bottom-nav  { display: none; }
+
+@media (max-width: 639px) {
+  .nav-desktop { display: none !important; }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--bottom-nav-h);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 .5rem;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -2px 12px rgba(0,0,0,.08);
+  }
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .2rem;
+  padding: .5rem;
+  color: var(--text-faint);
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+.bottom-nav-item:hover { color: var(--text-muted); text-decoration: none; }
+.bottom-nav-item--active { color: var(--primary) !important; }
+
+.bottom-nav-icon  { font-size: 20px; line-height: 1; }
+.bottom-nav-label { font-size: 10px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+
+.bottom-nav-logout { color: var(--text-faint); }

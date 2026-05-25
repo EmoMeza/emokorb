@@ -1,0 +1,13 @@
+.crear-form {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.crear-form h3 {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.acciones { display: flex; gap: .4rem; flex-wrap: wrap; }

@@ -1,0 +1,92 @@
+<div class="page-header">
+  <h2>Mi perfil</h2>
+</div>
+
+<div class="perfil-grid">
+  <div class="card">
+    <h3>Información</h3>
+    <dl class="info-list">
+      <dt>Nombre</dt>
+      <dd>{{ auth.usuario()?.nombre }} {{ auth.usuario()?.apellido }}</dd>
+      <dt>Username</dt>
+      <dd>{{ auth.usuario()?.username }}</dd>
+      <dt>Email</dt>
+      <dd>{{ auth.usuario()?.email }}</dd>
+      <dt>Rol</dt>
+      <dd>
+        <span class="badge" [class.badge-active]="auth.usuario()?.role === 'administrador'" [class.badge-done]="auth.usuario()?.role === 'usuario'">
+          {{ auth.usuario()?.role }}
+        </span>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Cambiar contraseña</h3>
+    <form class="password-form" (ngSubmit)="cambiarPassword()">
+      <div class="field">
+        <label>Contraseña actual</label>
+        <input type="password" [(ngModel)]="passwordForm.passwordActual" name="actual" placeholder="••••••••" />
+      </div>
+      <div class="field">
+        <label>Nueva contraseña</label>
+        <input type="password" [(ngModel)]="passwordForm.passwordNueva" name="nueva" placeholder="••••••••" />
+      </div>
+      <div class="field">
+        <label>Confirmar contraseña</label>
+        <input type="password" [(ngModel)]="passwordForm.confirmar" name="confirmar" placeholder="••••••••" />
+      </div>
+      @if (error()) { <p class="error-msg">{{ error() }}</p> }
+      @if (mensaje()) { <p class="success-msg">{{ mensaje() }}</p> }
+      <button type="submit" class="btn-primary" [disabled]="cargando()">
+        {{ cargando() ? 'Guardando...' : 'Cambiar contraseña' }}
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="card amigos-section">
+  <h3>Amigos</h3>
+
+  <form class="buscar-form" (ngSubmit)="buscar()">
+    <input type="text" [(ngModel)]="busqueda" name="busqueda" placeholder="Buscar por username o email..." />
+    <button type="submit" class="btn-secondary" [disabled]="buscando()">Buscar</button>
+  </form>
+
+  @if (resultados().length > 0) {
+    <ul class="usuario-lista">
+      @for (u of resultados(); track u._id) {
+        <li class="usuario-item">
+          <div class="usuario-info">
+            <span class="usuario-name">{{ u.username }}</span>
+            <span class="muted">{{ u.nombre }} {{ u.apellido }}</span>
+          </div>
+          @if (esAmigo(u._id)) {
+            <button class="btn-danger" style="padding:.3rem .75rem;font-size:13px" (click)="eliminarAmigo(u._id)">Eliminar</button>
+          } @else {
+            <button class="btn-primary" style="padding:.3rem .75rem;font-size:13px" (click)="agregarAmigo(u)">+ Agregar</button>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="amigos-lista">
+    @if ((perfil()?.amigos?.length ?? 0) === 0) {
+      <p class="muted" style="margin-top:.5rem">Aún no tienes amigos agregados.</p>
+    } @else {
+      <p class="amigos-label muted">Tus amigos ({{ perfil()!.amigos.length }})</p>
+      <ul class="usuario-lista">
+        @for (a of perfil()!.amigos; track a._id) {
+          <li class="usuario-item">
+            <div class="usuario-info">
+              <span class="usuario-name">{{ a.username }}</span>
+              <span class="muted">{{ a.nombre }} {{ a.apellido }}</span>
+            </div>
+            <button class="btn-icon" style="color:var(--danger)" (click)="eliminarAmigo(a._id)" title="Eliminar amigo">✕</button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

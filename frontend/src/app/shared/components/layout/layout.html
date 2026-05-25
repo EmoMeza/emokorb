@@ -1,0 +1,55 @@
+<div class="app-shell">
+  <nav class="navbar">
+    <a routerLink="/listas" class="nav-brand">
+      <img src="emokorb.png" alt="EmoKorb" class="nav-brand-logo" />
+      <span class="nav-brand-name">EmoKorb</span>
+    </a>
+
+    <div class="nav-spacer"></div>
+
+    <!-- Desktop links -->
+    <div class="nav-links nav-desktop">
+      <a routerLink="/listas" routerLinkActive="active" [routerLinkActiveOptions]="{exact:false}">Listas</a>
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin" routerLinkActive="active">Admin</a>
+      }
+      <a routerLink="/perfil" routerLinkActive="active">Perfil</a>
+    </div>
+
+    <button class="btn-theme" (click)="toggleTheme()" [title]="isDark() ? 'Modo claro' : 'Modo oscuro'">
+      {{ isDark() ? '☀️' : '🌙' }}
+    </button>
+
+    <a routerLink="/perfil" class="nav-avatar" [title]="auth.usuario()?.username ?? ''">
+      {{ initiales }}
+    </a>
+
+    <button class="btn-logout nav-desktop" (click)="auth.logout()">Salir</button>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet />
+  </main>
+
+  <!-- Bottom navigation (mobile only) -->
+  <nav class="bottom-nav">
+    <a routerLink="/listas" routerLinkActive="bottom-nav-item--active" class="bottom-nav-item">
+      <span class="bottom-nav-icon">🛒</span>
+      <span class="bottom-nav-label">Listas</span>
+    </a>
+    <a routerLink="/perfil" routerLinkActive="bottom-nav-item--active" class="bottom-nav-item">
+      <span class="bottom-nav-icon">👤</span>
+      <span class="bottom-nav-label">Perfil</span>
+    </a>
+    @if (auth.isAdmin()) {
+      <a routerLink="/admin" routerLinkActive="bottom-nav-item--active" class="bottom-nav-item">
+        <span class="bottom-nav-icon">⚙️</span>
+        <span class="bottom-nav-label">Admin</span>
+      </a>
+    }
+    <button class="bottom-nav-item bottom-nav-logout" (click)="auth.logout()">
+      <span class="bottom-nav-icon">↩</span>
+      <span class="bottom-nav-label">Salir</span>
+    </button>
+  </nav>
+</div>

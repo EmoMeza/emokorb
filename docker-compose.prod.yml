@@ -1,0 +1,48 @@
+name: emokorb
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - internal
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/lista_compras
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      FRONTEND_URL: ${FRONTEND_URL:-https://compras.emomeza.com}
+    depends_on:
+      - mongo
+    networks:
+      - internal
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: frontend
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - internal
+
+volumes:
+  mongo_data:
+
+networks:
+  internal:
+    driver: bridge
