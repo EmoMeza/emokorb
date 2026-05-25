@@ -42,6 +42,11 @@ export class ListaDetalleComponent implements OnInit, OnDestroy {
   get esOwner() { return this.lista()?.owner._id === this.auth.usuario()?._id; }
   get estaActiva() { return this.lista()?.estado === 'activo'; }
 
+  formatDate(dateStr?: string | null): string {
+    if (!dateStr) return '';
+    return new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(dateStr));
+  }
+
   estaListo(p: Producto) { return p.precioUnitario > 0 && p.cantidad > 0; }
 
   get productosOrdenados() {

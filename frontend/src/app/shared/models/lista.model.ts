@@ -13,6 +13,7 @@ export interface Lista {
   colaboradores: { _id: string; username: string; nombre: string; apellido: string }[];
   productos: Producto[];
   estado: 'activo' | 'finalizado';
+  fechaCierre: string | null;
   total: number;
   boleta: string | null;
   createdAt: string;

@@ -13,6 +13,12 @@
           · Con {{ l.colaboradores.map(c => c.username).join(', ') }}
         }
       </p>
+      <p class="muted lista-fechas-detalle">
+        Creada {{ formatDate(l.createdAt) }}
+        @if (l.fechaCierre) {
+          · Cerrada {{ formatDate(l.fechaCierre) }}
+        }
+      </p>
     </div>
     <div class="header-actions">
       <span class="badge" [class.badge-active]="l.estado === 'activo'" [class.badge-done]="l.estado === 'finalizado'">
@@ -62,10 +68,10 @@
                 <input class="input-nombre" type="text" [value]="p.nombre"
                   (blur)="onNombreBlur(p, $event)" />
               } @else {
-                {{ p.nombre }}
+                <span class="nombre-text">{{ p.nombre }}</span>
               }
             </td>
-            <td class="col-num">
+            <td class="col-num col-precio">
               @if (estaActiva) {
                 <input class="input-num" type="number" inputmode="decimal"
                   min="0" [value]="p.precioUnitario || ''" placeholder="0"
@@ -74,7 +80,7 @@
                 {{ p.precioUnitario ? '$' + p.precioUnitario.toLocaleString('es-CL') : '—' }}
               }
             </td>
-            <td class="col-num">
+            <td class="col-num col-cant">
               @if (estaActiva) {
                 <input class="input-num" type="number" inputmode="numeric"
                   min="0" [value]="p.cantidad || ''" placeholder="0"

@@ -27,6 +27,11 @@ export class ListasComponent implements OnInit {
     return this.listas().filter((l) => l.estado === 'finalizado');
   }
 
+  formatDate(dateStr?: string | null): string {
+    if (!dateStr) return '';
+    return new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(dateStr));
+  }
+
   ngOnInit() {
     this.cargar();
   }

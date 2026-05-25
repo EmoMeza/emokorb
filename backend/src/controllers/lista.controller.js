@@ -35,7 +35,10 @@ export const editarLista = async (req, res) => {
   const { nombre, estado } = req.body;
   const campos = {};
   if (nombre) campos.nombre = nombre;
-  if (estado) campos.estado = estado;
+  if (estado) {
+    campos.estado = estado;
+    campos.fechaCierre = estado === "finalizado" ? new Date() : null;
+  }
 
   Object.assign(req.lista, campos);
   await req.lista.save();

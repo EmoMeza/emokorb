@@ -14,6 +14,7 @@ const listaSchema = new mongoose.Schema(
     colaboradores: [{ type: mongoose.Schema.Types.ObjectId, ref: "Usuario" }],
     productos: [productoSchema],
     estado: { type: String, enum: ["activo", "finalizado"], default: "activo" },
+    fechaCierre: { type: Date, default: null },
     total: { type: Number, default: 0 },
     boleta: { type: mongoose.Schema.Types.ObjectId, default: null },
   },
