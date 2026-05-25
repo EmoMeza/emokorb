@@ -47,8 +47,8 @@
 @if (cargando()) {
   <p class="muted" style="text-align:center;margin-top:2rem">Cargando...</p>
 } @else {
-  <div class="card" style="padding:0;overflow:hidden">
-    <table>
+  <div class="card users-table-wrap" style="padding:0;overflow:hidden">
+    <table class="users-table">
       <thead>
         <tr>
           <th>Usuario</th>
@@ -61,10 +61,10 @@
       <tbody>
         @for (u of usuarios(); track u._id) {
           <tr>
-            <td><strong>{{ u.username }}</strong></td>
-            <td class="muted">{{ u.email }}</td>
-            <td>{{ u.nombre }} {{ u.apellido }}</td>
-            <td>
+            <td data-label="Usuario"><strong>{{ u.username }}</strong></td>
+            <td data-label="Email" class="muted">{{ u.email }}</td>
+            <td data-label="Nombre">{{ u.nombre }} {{ u.apellido }}</td>
+            <td data-label="Rol">
               <span class="badge" [class.badge-active]="u.role === 'administrador'" [class.badge-done]="u.role === 'usuario'">
                 {{ u.role }}
               </span>

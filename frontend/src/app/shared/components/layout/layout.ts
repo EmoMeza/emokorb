@@ -28,6 +28,10 @@ export class LayoutComponent implements OnInit {
     localStorage.setItem('theme', dark ? 'dark' : 'light');
   }
 
+  cerrarSesion() {
+    if (confirm('¿Seguro que quieres salir?')) this.auth.logout();
+  }
+
   get initiales() {
     const u = this.auth.usuario();
     return u?.username?.charAt(0)?.toUpperCase() ?? '?';

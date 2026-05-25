@@ -24,6 +24,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       FRONTEND_URL: ${FRONTEND_URL:-https://compras.emomeza.com}
+      MAX_USUARIOS: ${MAX_USUARIOS:-10}
     depends_on:
       - mongo
     networks:

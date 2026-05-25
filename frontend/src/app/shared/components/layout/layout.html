@@ -24,7 +24,7 @@
       {{ initiales }}
     </a>
 
-    <button class="btn-logout nav-desktop" (click)="auth.logout()">Salir</button>
+    <button class="btn-logout nav-desktop" (click)="cerrarSesion()">Salir</button>
   </nav>
 
   <main class="main-content">
@@ -47,7 +47,7 @@
         <span class="bottom-nav-label">Admin</span>
       </a>
     }
-    <button class="bottom-nav-item bottom-nav-logout" (click)="auth.logout()">
+    <button class="bottom-nav-item bottom-nav-logout" (click)="cerrarSesion()">
       <span class="bottom-nav-icon">↩</span>
       <span class="bottom-nav-label">Salir</span>
     </button>

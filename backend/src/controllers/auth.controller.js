@@ -16,8 +16,9 @@ export const registro = async (req, res) => {
     return res.status(409).json({ message: "Email o username ya registrado" });
   }
 
+  const limite = parseInt(process.env.MAX_USUARIOS ?? "10", 10);
   const totalUsuarios = await Usuario.countDocuments();
-  if (totalUsuarios >= 10) {
+  if (totalUsuarios >= limite) {
     return res.status(403).json({ message: "El límite de usuarios ha sido alcanzado" });
   }
 

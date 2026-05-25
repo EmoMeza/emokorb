@@ -11,3 +11,42 @@
 }
 
 .acciones { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+/* ─── Responsive table (mobile cards) ───────────── */
+@media (max-width: 639px) {
+  .users-table-wrap { padding: 0; }
+
+  .users-table thead { display: none; }
+  .users-table,
+  .users-table tbody,
+  .users-table tr,
+  .users-table td { display: block; width: 100%; }
+
+  .users-table tr {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .users-table tr:last-child { border-bottom: none; }
+
+  .users-table td {
+    padding: 0;
+    border: none;
+    font-size: 14px;
+  }
+  .users-table td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-faint);
+    margin-right: .25rem;
+  }
+  .users-table td.acciones {
+    justify-content: flex-start;
+    margin-top: .35rem;
+  }
+}
