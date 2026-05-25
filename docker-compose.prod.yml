@@ -3,7 +3,7 @@ name: emokorb
 services:
   mongo:
     image: mongo:7
-    container_name: mongo
+    container_name: emokorb-mongo
     restart: always
     volumes:
       - mongo_data:/data/db
@@ -14,7 +14,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: backend
+    container_name: emokorb-backend
     restart: always
     ports:
       - "3000:3000"
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-    container_name: frontend
+    container_name: emokorb-frontend
     restart: always
     ports:
       - "8080:80"
